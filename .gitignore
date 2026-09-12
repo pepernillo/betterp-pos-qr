@@ -18,3 +18,6 @@ node_modules/
 .next/
 .vercel/
 .wrangler/
+
+# borrador personal de la solicitud, no va al repo
+SOLICITUD_CODEX_OSS.md
