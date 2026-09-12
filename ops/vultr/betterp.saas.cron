@@ -1,0 +1,11 @@
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# BetterP SaaS: unica cohorte activa del scheduler de plataforma.
+# Cada proceso es idempotente y usa un lock exclusivo para impedir concurrencia.
+20 9 * * * root /usr/bin/flock -n /run/lock/betterp-trial-expiration.lock /usr/local/bin/python /app/core/cron_with_runtime_env.py manage.py expirar_trials_saas >> /proc/1/fd/1 2>> /proc/1/fd/2
+40 9 * * * root /usr/bin/flock -n /run/lock/betterp-scheduled-plan-changes.lock /usr/local/bin/python /app/core/cron_with_runtime_env.py manage.py apply_pending_plan_changes --generated-by "vultr-scheduler" >> /proc/1/fd/1 2>> /proc/1/fd/2
+*/5 * * * * root /usr/bin/flock -n /run/lock/betterp-marketing-publish.lock /usr/local/bin/python /app/core/cron_with_runtime_env.py manage.py publish_marketing_campaigns --limit 20 --fail-on-error >> /proc/1/fd/1 2>> /proc/1/fd/2
+2-57/5 * * * * root /usr/bin/flock -n /run/lock/betterp-tiktok-publication-sync.lock /usr/local/bin/python /app/core/cron_with_runtime_env.py manage.py sync_tiktok_publications --limit 25 --fail-on-error >> /proc/1/fd/1 2>> /proc/1/fd/2
+12 * * * * root /usr/bin/flock -n /run/lock/betterp-marketing-metrics-sync.lock /usr/local/bin/python /app/core/cron_with_runtime_env.py manage.py sync_marketing_metrics --limit 200 >> /proc/1/fd/1 2>> /proc/1/fd/2
+30 14 * * * root /usr/bin/flock -n /run/lock/betterp-post-go-live-report.lock /usr/local/bin/python /app/core/cron_with_runtime_env.py manage.py report_post_go_live_tasks --no-email >> /proc/1/fd/1 2>> /proc/1/fd/2

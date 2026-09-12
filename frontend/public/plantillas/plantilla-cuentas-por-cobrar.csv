@@ -1,0 +1,21 @@
+UNIDAD,CLIENTE,CONCEPTO,MONTO,FECHA VENCIMIENTO,FECHA EMISION,PERIODO INICIO,PERIODO FIN,ORIGEN,PERIODICIDAD,REFERENCIA,ESTATUS,OBSERVACIONES
+Maya Coliving Norte,Brenda Martinez Vela,Renta Hab 01,9200,2026-05-05,2026-05-01,2026-05-01,2026-05-31,RENTA,MENSUAL,CXC-PLANTILLA-001,PENDIENTE,Renta mensual habitacion ocupada
+Maya Coliving Norte,Ulises Romero Reyes,Renta Hab 03,9200,2026-05-05,2026-05-01,2026-05-01,2026-05-31,RENTA,MENSUAL,CXC-PLANTILLA-002,PENDIENTE,Renta mensual habitacion ocupada
+Maya Coliving Norte,Mauricio Flores,Renta Hab 04,9200,2026-05-05,2026-05-01,2026-05-01,2026-05-31,RENTA,MENSUAL,CXC-PLANTILLA-003,PENDIENTE,Renta mensual habitacion ocupada
+Maya Coliving Norte,Ana Sofia Torres,Deposito Hab 02,9200,2026-05-03,2026-05-01,2026-05-01,2026-05-31,DEPOSITO,UNICO,CXC-PLANTILLA-004,PENDIENTE,Deposito por nueva asignacion
+Maya Coliving Norte,Brenda Martinez Vela,Limpieza extraordinaria,650,2026-05-08,2026-05-01,2026-05-01,2026-05-31,AJUSTE,UNICO,CXC-PLANTILLA-005,PENDIENTE,Servicio adicional solicitado
+Suites Centro Historico,Brenda Martinez Vela,Renta Hab 01,9200,2026-05-05,2026-05-01,2026-05-01,2026-05-31,RENTA,MENSUAL,CXC-PLANTILLA-006,PENDIENTE,Renta mensual suite
+Suites Centro Historico,Ulises Romero Reyes,Renta Hab 03,9200,2026-05-05,2026-05-01,2026-05-01,2026-05-31,RENTA,MENSUAL,CXC-PLANTILLA-007,PENDIENTE,Renta mensual suite
+Suites Centro Historico,Mauricio Flores,Renta Hab 04,9200,2026-05-05,2026-05-01,2026-05-01,2026-05-31,RENTA,MENSUAL,CXC-PLANTILLA-008,PENDIENTE,Renta mensual suite
+Suites Centro Historico,Ana Sofia Torres,Deposito Depto 01,15500,2026-05-04,2026-05-01,2026-05-01,2026-05-31,DEPOSITO,UNICO,CXC-PLANTILLA-009,PENDIENTE,Deposito por departamento
+Suites Centro Historico,Brenda Martinez Vela,Ajuste de servicios,850,2026-05-10,2026-05-01,2026-05-01,2026-05-31,AJUSTE,UNICO,CXC-PLANTILLA-010,PENDIENTE,Diferencia de servicios del periodo
+Condominio Vista Mar,Brenda Martinez Vela,Cuota mantenimiento Mayo,4500,2026-05-10,2026-05-01,2026-05-01,2026-05-31,REGLA,MENSUAL,CXC-PLANTILLA-011,PENDIENTE,Cuota ordinaria mensual
+Condominio Vista Mar,Ulises Romero Reyes,Cuota mantenimiento Mayo,4500,2026-05-10,2026-05-01,2026-05-01,2026-05-31,REGLA,MENSUAL,CXC-PLANTILLA-012,PENDIENTE,Cuota ordinaria mensual
+Condominio Vista Mar,Mauricio Flores,Cuota mantenimiento Mayo,4500,2026-05-10,2026-05-01,2026-05-01,2026-05-31,REGLA,MENSUAL,CXC-PLANTILLA-013,PENDIENTE,Cuota ordinaria mensual
+Condominio Vista Mar,Ana Sofia Torres,Reserva amenidades,1200,2026-05-12,2026-05-01,2026-05-01,2026-05-31,AJUSTE,UNICO,CXC-PLANTILLA-014,PENDIENTE,Uso de amenidad comun
+Condominio Vista Mar,Brenda Martinez Vela,Recargo administrativo,350,2026-05-15,2026-05-01,2026-05-01,2026-05-31,AJUSTE,UNICO,CXC-PLANTILLA-015,PENDIENTE,Cargo por gestion administrativa
+Maya Coliving Norte,Ulises Romero Reyes,Penalizacion salida tardia,500,2026-05-18,2026-05-01,2026-05-01,2026-05-31,AJUSTE,UNICO,CXC-PLANTILLA-016,PENDIENTE,Penalizacion operativa
+Suites Centro Historico,Mauricio Flores,Estacionamiento mensual,1100,2026-05-08,2026-05-01,2026-05-01,2026-05-31,REGLA,MENSUAL,CXC-PLANTILLA-017,PENDIENTE,Servicio adicional mensual
+Condominio Vista Mar,Ulises Romero Reyes,Agua areas comunes,780,2026-05-14,2026-05-01,2026-05-01,2026-05-31,REGLA,MENSUAL,CXC-PLANTILLA-018,PENDIENTE,Prorrateo de servicios comunes
+Maya Coliving Norte,Ana Sofia Torres,Renta Depto 01,15500,2026-05-05,2026-05-01,2026-05-01,2026-05-31,RENTA,MENSUAL,CXC-PLANTILLA-019,PENDIENTE,Renta mensual departamento
+Suites Centro Historico,Ana Sofia Torres,Renta Depto 01,15500,2026-05-05,2026-05-01,2026-05-01,2026-05-31,RENTA,MENSUAL,CXC-PLANTILLA-020,PENDIENTE,Renta mensual departamento

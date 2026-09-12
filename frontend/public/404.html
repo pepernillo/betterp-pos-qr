@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>Not found</title>
+    <script>
+      (function () {
+        var legacyHosts = { "app.betterp.net": true };
+        var host = window.location.hostname.toLowerCase();
+
+        if (!legacyHosts[host]) {
+          return;
+        }
+
+        window.location.replace(
+          "https://betterp.net" +
+            window.location.pathname +
+            window.location.search +
+            window.location.hash
+        );
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

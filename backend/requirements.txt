@@ -1,0 +1,27 @@
+# BetterP POS QR - backend
+Django==6.0.4
+django-ninja==1.6.2
+django-cors-headers==4.9.0
+django-environ==0.13.0
+django-redis==6.0.0
+django-storages==1.14.6
+dj-database-url==3.1.2
+psycopg2-binary==2.9.11
+gunicorn==25.3.0
+
+# seguridad / credenciales
+argon2-cffi==25.1.0
+cryptography==46.0.7
+
+# almacenamiento de imagenes de producto (R2/S3)
+boto3==1.42.90
+pillow==12.2.0
+
+# facturacion y finanzas: lectura de estados de cuenta y hojas de calculo
+openpyxl==3.1.5
+pdfplumber==0.11.9
+pypdfium2==5.7.1
+
+# integraciones salientes y observabilidad
+requests==2.32.5
+sentry-sdk==2.48.0

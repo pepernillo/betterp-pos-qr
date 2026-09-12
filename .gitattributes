@@ -1,0 +1,2 @@
+ops/vultr/*.sh text eol=lf
+ops/vultr/*.cron text eol=lf
