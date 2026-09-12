@@ -9,8 +9,8 @@ Proyecto: https://github.com/pepernillo/betterp-pos-qr
 
 | Campo | Qué poner |
 |---|---|
-| Nombre | *(tú)* |
-| Apellidos | *(tú)* |
+| Nombre | `Alfredo` |
+| Apellidos | `Godinez` |
 | Correo electrónico | el de tu cuenta de ChatGPT |
 | Nombre de usuario de GitHub | `pepernillo` |
 | URL del repositorio | `https://github.com/pepernillo/betterp-pos-qr` |
@@ -67,22 +67,17 @@ Soy transparente con el estado del proyecto: lo publique apenas, derivado de un 
 | Senal | Estado |
 |---|---|
 | README de perfil | publicado |
-| Repos visibles | betterp-pos-qr, pepernillo y dos forks antiguos |
-| Nombre y bio | **faltan** (requieren el scope `user`) |
-| Contribuciones privadas visibles | **falta activarlo** |
+| Perfil publico | si (verificado) |
+| Repos visibles | betterp-pos-qr (fijado), pepernillo y dos forks antiguos |
+| Nombre y bio | Alfredo Godinez + bio publicada |
+| Contribuciones privadas visibles | activadas |
 
-### Lo que falta, en orden de impacto
+### Lo que falta
 
-1. **Activar contribuciones privadas** en
-   https://github.com/settings/profile -> Contributions ->
-   *Include private contributions on my profile*.
-   Sin esto tu grafica se ve casi vacia para quien no ha iniciado sesion, y
-   "evidencia de mantenimiento activo" es justo lo que el programa evalua.
-2. **Fijar solo betterp-pos-qr** con *Customize your pins* en tu perfil. Hoy los
-   dos forks aparecen primero en "Popular repositories".
-3. **Nombre y bio** en el perfil.
-4. En el formulario: nombre, apellidos, correo de tu cuenta de ChatGPT y el ID
-   de organizacion de OpenAI (platform.openai.com -> Settings -> Organization).
+Solo dos datos que estan en tu cuenta de OpenAI, no en GitHub:
 
-El aviso de copyright del README del proyecto dice `pepernillo`. Si prefieres tu
-nombre legal, cambialo ahi y en la solicitud.
+1. **Correo** de tu cuenta de ChatGPT.
+2. **ID de organizacion**: platform.openai.com -> Settings -> Organization
+   (formato `org-...`).
+
+Todo lo de GitHub quedo listo.

@@ -92,7 +92,7 @@ de venta (`pos/tests.py`) se escribieron para este fork.
 
 [GNU AGPL-3.0](LICENSE).
 
-Copyright (C) 2026 pepernillo
+Copyright (C) 2026 Alfredo Godinez
 
 Es copyleft de red: quien ofrezca este software como servicio a traves de una
 red tiene que poner el codigo fuente de su version a disposicion de sus usuarios
