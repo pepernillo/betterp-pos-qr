@@ -56,9 +56,8 @@ BILLABLE_USAGE_CATEGORIES = [
 ]
 SOLUTION_POS_QR_KEY = "pos_qr"
 POS_QR_SYNC_METADATA_KEY = "pos_qr_sync"
-DEFAULT_BETTERP_APP_BASE_URL = "https://posqr.betterp.net"
+DEFAULT_BETTERP_APP_BASE_URL = "http://localhost:3000"
 POS_QR_ENTRY_PATH = "/pos-qr/caja"
-LEGACY_BETTERP_APP_BASE_URL = "https://app.betterp.net"
 
 
 
@@ -253,13 +252,8 @@ def normalize_platform_app_base_url(value: str | None) -> str:
     if not base_url:
         return DEFAULT_BETTERP_APP_BASE_URL
     try:
-        legacy_host = urlsplit(LEGACY_BETTERP_APP_BASE_URL).netloc.lower()
-        parsed = urlsplit(base_url)
-        if parsed.netloc.lower() == legacy_host:
-            return DEFAULT_BETTERP_APP_BASE_URL
+        urlsplit(base_url)
     except ValueError:
-        return DEFAULT_BETTERP_APP_BASE_URL
-    if base_url.lower() == LEGACY_BETTERP_APP_BASE_URL:
         return DEFAULT_BETTERP_APP_BASE_URL
     return base_url
 

@@ -64,11 +64,8 @@ class Categoria(models.Model):
 class Producto(models.Model):
     SOURCE_CHOICES = [
         ("manual", "Manual"),
-        ("amazon", "Amazon"),
-        ("mercado_libre", "Mercado Libre"),
-        ("ingram", "Ingram API"),
-        ("shopify", "Shopify"),
-        ("woocommerce", "WooCommerce"),
+        ("importacion", "Carga masiva"),
+        ("api", "API"),
     ]
 
     capa_negocio = models.ForeignKey(

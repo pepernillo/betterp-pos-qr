@@ -20,7 +20,7 @@ import {
   readStoredSelectedCapaId,
   resolveFetchUrl,
 } from "@/lib/api";
-import { resolveSolutionRedirectFromSearch } from "@/lib/solution-launch";
+import { resolveSolutionRedirectFromSearch } from "@/lib/pos-segment";
 
 type AuthStatus = "loading" | "authenticated" | "anonymous";
 

@@ -1,8 +1,0 @@
-services:
-  betterp-scheduler:
-    # Video publishing opens provider SDKs and may stream files larger than 100 MB.
-    # Keep the scheduler bounded, but above the previous 192 MB cron-only ceiling.
-    mem_limit: 512m
-    cpus: 0.5
-    volumes:
-      - ../config/betterp.saas.cron:/etc/cron.d/betterp:ro

@@ -12,7 +12,7 @@ import {
   beginGoogleIdTokenRedirect,
   consumeGoogleIdTokenRedirect,
 } from "@/lib/googleAuth";
-import { resolveSolutionRedirectFromSearch } from "@/lib/solution-launch";
+import { resolveSolutionRedirectFromSearch } from "@/lib/pos-segment";
 
 interface BootstrapStatusResponse {
   requires_bootstrap: boolean;
@@ -21,7 +21,7 @@ interface BootstrapStatusResponse {
   public_trial_enabled?: boolean;
 }
 
-type RequestedSolution = "renta_facil" | "vende_facil" | "tienda_facil" | "";
+type RequestedSolution = "pos_qr" | "";
 
 const SOLUTION_LOGIN_CONTENT: Record<
   Exclude<RequestedSolution, "">,
@@ -35,35 +35,15 @@ const SOLUTION_LOGIN_CONTENT: Record<
     cards: string[];
   }
 > = {
-  renta_facil: {
-    badge: "Renta Facil",
-    title: "Entra a Renta Facil.",
+  pos_qr: {
+    badge: "BetterP POS QR",
+    title: "Entra a tu punto de venta.",
     description:
-      "Accede a espacios, cobranza, pagos y clientes desde el panel de operacion de tus propiedades.",
-    formEyebrow: "Renta Facil",
-    formTitle: "Entrar a Renta Facil",
-    submitLabel: "Entrar a Renta Facil",
-    cards: ["Espacios y ocupacion", "Cobranza y pagos", "Clientes y reportes"],
-  },
-  vende_facil: {
-    badge: "BetterP Commerce",
-    title: "Entra a BetterP Commerce.",
-    description:
-      "Tu acceso anterior de Vende Facil ahora abre el sistema integral BetterP Commerce.",
-    formEyebrow: "BetterP Commerce",
-    formTitle: "Entrar a BetterP Commerce",
-    submitLabel: "Entrar a BetterP Commerce",
-    cards: ["Productos e inventario", "POS y tienda online", "Canales y reportes"],
-  },
-  tienda_facil: {
-    badge: "BetterP Commerce",
-    title: "Entra a BetterP Commerce.",
-    description:
-      "Opera inventario, catalogos, caja, tienda online, marketplaces, facturacion, envios y reportes.",
-    formEyebrow: "BetterP Commerce",
-    formTitle: "Entrar a BetterP Commerce",
-    submitLabel: "Entrar a BetterP Commerce",
-    cards: ["Catalogos y reglas", "POS y e-commerce", "Ventas y logistica"],
+      "Abre la caja, cobra en mostrador o por codigo QR y lleva las mesas de tu restaurante.",
+    formEyebrow: "BetterP POS QR",
+    formTitle: "Entrar al punto de venta",
+    submitLabel: "Entrar",
+    cards: ["Caja y cobro por QR", "Mesas y comandas", "Productos e inventario"],
   },
 };
 
@@ -109,13 +89,7 @@ export default function LoginPage() {
       .trim()
       .toLowerCase()
       .replaceAll("-", "_");
-    setRequestedSolution(
-      solution === "renta_facil" ||
-        solution === "vende_facil" ||
-        solution === "tienda_facil"
-        ? solution
-        : ""
-    );
+    setRequestedSolution(solution === "pos_qr" ? solution : "");
     setPostLoginRedirect(resolveSolutionRedirectFromSearch(window.location.search));
   }, []);
 

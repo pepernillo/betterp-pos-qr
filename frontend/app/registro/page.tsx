@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import PlanCheckoutRegistration from "@/components/marketing/PlanCheckoutRegistration";
+import PlanCheckoutRegistration from "@/components/publico/PlanCheckoutRegistration";
 
 export default function RegistroPage() {
   return (

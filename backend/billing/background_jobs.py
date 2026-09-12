@@ -153,40 +153,6 @@ def _dispatch_job(job: BackgroundJob) -> dict[str, Any]:
 
         return import_bank_statement_from_storage(job.payload)
 
-    if job.kind == "billing.marketing_content_generate_week":
-        from django.contrib.auth import get_user_model
-
-        from .marketing_automation import (
-            build_marketing_content_queue_message,
-            generate_renta_facil_content_queue,
-        )
-
-        payload = job.payload or {}
-        created_by = job.created_by
-        created_by_id = payload.get("created_by_id")
-        if created_by is None and created_by_id:
-            created_by = get_user_model().objects.filter(id=created_by_id).first()
-        result = generate_renta_facil_content_queue(
-            created_by=created_by,
-            days=int(payload.get("days") or 7),
-            start_date=str(payload.get("start_date") or ""),
-            local_time=str(payload.get("local_time") or "10:15"),
-            channel_ids=[
-                int(channel_id)
-                for channel_id in (payload.get("canales_ids") or [])
-                if str(channel_id or "").strip()
-            ],
-            use_learning=bool(payload.get("use_learning")),
-            learning_window_days=int(payload.get("learning_window_days") or 30),
-        )
-        return {
-            "mensaje": build_marketing_content_queue_message(
-                result,
-                target_days=int(payload.get("days") or 7),
-            ),
-            "resultado": result,
-        }
-
     if job.kind == "billing.marketing_weekly_plan_generate":
         from django.contrib.auth import get_user_model
 

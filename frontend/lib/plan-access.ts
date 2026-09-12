@@ -14,33 +14,30 @@ export type PlanAccessDecision = {
 };
 
 const MODULE_LABELS: Record<string, string> = {
-  dashboard: "Dashboard",
-  entidades: "Unidades de negocio",
+  dashboard: "Tablero de venta",
+  catalogo: "Productos y catalogos",
+  inventario: "Inventario",
+  pos_caja: "Caja",
+  cobro_qr: "Cobro por QR",
+  restaurante: "Restaurante",
   clientes: "Clientes",
-  renta_espacios: "Renta de espacios",
-  cxc: "Cuentas por cobrar",
-  cxp: "Cuentas por pagar",
-  conciliacion: "Conciliacion bancaria",
-  cobranza: "Cobranza",
-  marketing: "Marketing",
   facturacion_cfdi: "Facturacion CFDI",
+  finanzas: "Finanzas",
+  reportes: "Reportes de venta",
 };
 
 const FEATURE_LABELS: Record<string, string> = {
-  batch_import: "Carga batch",
-  social_publishing: "Conexiones y publicacion en canales",
+  menu_qr_publico: "Menu QR publico",
+  pedido_desde_mesa: "Pedido desde la mesa",
+  propinas: "Propinas",
+  cuenta_dividida: "Cuenta dividida",
+  descuentos: "Descuentos y promociones",
+  multi_caja: "Varias cajas",
+  impresion_tickets: "Impresion de tickets",
+  batch_import: "Carga masiva",
   whatsapp_automation: "Automatizacion por WhatsApp",
-  ai_copy: "Copy asistido por IA",
-  marketing_automation: "Automatizacion de marketing",
-  marketing_learning_loop: "Learning loop de marketing",
-  marketing_meta_insights: "Metricas de Meta para marketing",
-  marketing_paid_brief: "Brief de pauta controlada",
-  marketing_facebook: "Marketing en Facebook",
-  marketing_instagram: "Marketing en Instagram",
-  marketing_tiktok: "Marketing en TikTok",
-  marketing_youtube: "Marketing en YouTube",
   webhooks_api: "Webhooks y API",
-  advanced_users: "Usuarios avanzados",
+  advanced_users: "Usuarios y permisos avanzados",
   priority_support: "Soporte prioritario",
 };
 
@@ -86,7 +83,7 @@ function blockedByModule(
   };
 }
 
-function blockedByFeature(
+export function blockedByFeature(
   subscription: PlanAccessSubscription,
   featureKey: string
 ): PlanAccessDecision {
@@ -113,50 +110,37 @@ function moduleDecision(
 export function getRoutePlanAccess(
   pathname: string,
   tab: string,
-  subscription: PlanAccessSubscription,
-  hasProviderCallback = false
+  subscription: PlanAccessSubscription
 ): PlanAccessDecision {
   if (!isPlanKnown(subscription)) {
     return { allowed: true };
   }
 
   if (
-    pathname === "/onboarding" ||
     pathname === "/configuracion" ||
     pathname === "/cuenta" ||
-    pathname === "/documentacion"
+    pathname === "/pos-qr/entrar"
   ) {
     return { allowed: true };
   }
 
-  if (pathname === "/dashboard") return moduleDecision(subscription, "dashboard");
-  if (pathname === "/clientes") return moduleDecision(subscription, "clientes");
-  if (pathname === "/cxc") return moduleDecision(subscription, "cxc");
-  if (pathname === "/cxp") return moduleDecision(subscription, "cxp");
-  if (pathname === "/conciliacion") {
-    return moduleDecision(subscription, "conciliacion");
-  }
-  if (pathname === "/cobranza") return moduleDecision(subscription, "cobranza");
-  if (pathname === "/marketing") return moduleDecision(subscription, "marketing");
+  const ROUTE_MODULES: Record<string, string> = {
+    "/dashboard": "dashboard",
+    "/clientes": "clientes",
+    "/pos-qr/caja": "pos_caja",
+    "/pos-qr/cajas": "pos_caja",
+    "/pos-qr/corte": "pos_caja",
+    "/pos-qr/mesas": "restaurante",
+    "/pos-qr/comandas": "restaurante",
+    "/pos-qr/productos": "catalogo",
+    "/pos-qr/catalogos": "catalogo",
+    "/pos-qr/inventario": "inventario",
+    "/pos-qr/reportes": "reportes",
+  };
 
-  if (pathname === "/entidades" || pathname.startsWith("/entidades/")) {
-    return moduleDecision(subscription, "entidades");
-  }
-
-  if (pathname === "/renta-espacios") {
-    const moduleAccess = moduleDecision(subscription, "renta_espacios");
-    if (!moduleAccess.allowed) return moduleAccess;
-
-    const activeTab = hasProviderCallback ? "conexiones" : tab || "espacios";
-    if (activeTab === "batch" && !hasPlanFeature(subscription, "batch_import")) {
-      return blockedByFeature(subscription, "batch_import");
-    }
-    if (
-      (activeTab === "conexiones" || activeTab === "publicacion") &&
-      !hasPlanFeature(subscription, "social_publishing")
-    ) {
-      return blockedByFeature(subscription, "social_publishing");
-    }
+  const moduleKey = ROUTE_MODULES[pathname];
+  if (moduleKey) {
+    return moduleDecision(subscription, moduleKey);
   }
 
   return { allowed: true };

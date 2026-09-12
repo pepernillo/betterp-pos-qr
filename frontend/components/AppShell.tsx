@@ -196,26 +196,19 @@ export default function AppShell({ children }: AppShellProps) {
     pathname === "/privacy" ||
     pathname === "/terms" ||
     pathname === "/data-deletion" ||
-    pathname.startsWith("/soluciones/") ||
+    pathname === "/pos-qr" ||
     pathname === "/login" ||
     pathname === "/registro" ||
     pathname === "/backoffice/login" ||
-    pathname === "/admin/login" ||
     pathname === "/recuperar-acceso" ||
     pathname.startsWith("/backoffice/invitacion/") ||
-    pathname.startsWith("/admin/invitacion/") ||
     pathname.startsWith("/invitacion/") ||
-    pathname.startsWith("/portal-cliente/") ||
+    pathname.startsWith("/menu/") ||
+    pathname.startsWith("/pagar/") ||
     pathname.startsWith("/pago/") ||
-    pathname.startsWith("/vendedores/") ||
     pathname.startsWith("/restablecer-acceso/");
   const isBackofficeRoute =
-    pathname === "/backoffice" ||
-    pathname.startsWith("/backoffice/") ||
-    pathname === "/admin" ||
-    pathname.startsWith("/admin/") ||
-    pathname === "/administracion-negocio" ||
-    pathname.startsWith("/administracion-negocio/");
+    pathname === "/backoffice" || pathname.startsWith("/backoffice/");
   const canAccessBillingResolution =
     pathname === "/configuracion" || pathname === "/cuenta";
 
@@ -337,12 +330,7 @@ export default function AppShell({ children }: AppShellProps) {
     return null;
   }
 
-  const routeAccess = getRoutePlanAccess(
-    pathname,
-    routeTab,
-    subscriptionAccess,
-    hasProviderCallback
-  );
+  const routeAccess = getRoutePlanAccess(pathname, routeTab, subscriptionAccess);
 
   return (
     <div className="app-shell relative min-h-screen bg-transparent text-zinc-100">

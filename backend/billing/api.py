@@ -115,8 +115,6 @@ from .services import (
     serialize_subscription,
     serialize_subscription_admin,
     SOLUTION_POS_QR_KEY,
-    SOLUTION_POS_QR_KEY,
-    SOLUTION_POS_QR_KEY,
 )
 
 router = Router(tags=["billing"])
@@ -1671,15 +1669,10 @@ def build_prospect_notification_message(prospect: ProspectoComercial) -> str:
 def normalize_solution_key(value: str) -> str:
     key = slugify(value or "").replace("-", "_")
     aliases = {
-        "vendefacil": "tienda_facil",
-        "catalogo": "tienda_facil",
-        "renta_facil": "renta_facil",
-        "rentafacil": "renta_facil",
-        "tiendafacil": "tienda_facil",
-        "tienda_facil": "tienda_facil",
-        "betterp_renta": "renta_facil",
-        "betterp_vende": "tienda_facil",
-        "betterp_tienda": "tienda_facil",
+        "posqr": SOLUTION_POS_QR_KEY,
+        "pos": SOLUTION_POS_QR_KEY,
+        "betterp_pos": SOLUTION_POS_QR_KEY,
+        "betterp_pos_qr": SOLUTION_POS_QR_KEY,
     }
     return aliases.get(key, key)
 
@@ -2498,7 +2491,7 @@ MARKETING_CAMPAIGN_SOLUTION_LABELS = {
     "betterp": "BetterP",
     "renta_facil": "Renta Facil",
     "tienda_facil": "BetterP Commerce",
-    "catalogo": "Vende Facil",
+    "pos_qr": "BetterP POS QR",
     "restaurantes": "BetterP Restaurantes",
     "b2b": "BetterP B2B",
 }
@@ -2718,7 +2711,7 @@ def require_operational_subscription(subscription: SuscripcionCapa) -> Suscripci
     if is_retired_solution(subscription.plan.solution):
         raise HttpError(
             409,
-            "Vende Facil se conserva como historial de solo lectura en BetterP Commerce.",
+            "Las suscripciones historicas se conservan como solo lectura.",
         )
     return subscription
 
@@ -4374,207 +4367,8 @@ def build_backend_request_metrics_summary(*, since_24h, since_7d) -> dict:
     }
 
 
-def _catalogo_bridge_base_url() -> str:
-    configured = (getattr(settings, "CATALOGO_SERVICE_BASE_URL", "") or "").strip()
-    if not configured:
-        return ""
-    base = configured.rstrip("/")
-    if base.endswith("/api/v1/betterp"):
-        return base
-    return f"{base}/api/v1/betterp"
 
 
-def build_catalogo_bridge_summary(
-    subscriptions: list[SuscripcionCapa],
-    *,
-    since_24h,
-) -> dict:
-    vende_subscriptions = [
-        subscription
-        for subscription in subscriptions
-        if is_catalogo_plan(subscription.plan)
-    ]
-    active_vende_subscriptions = [
-        subscription
-        for subscription in vende_subscriptions
-        if subscription.estatus in {"ACTIVA", "TRIAL", "PAST_DUE"}
-    ]
-    if not vende_subscriptions:
-        return {
-            "available": False,
-            "status": "OK",
-            "configured": False,
-            "base_url": "",
-            "detail": "Vende Facil retirado; sus capacidades operan en BetterP Commerce.",
-            "response_ms": None,
-            "clients": 0,
-            "active_clients": 0,
-            "sync_ok": 0,
-            "sync_pending": 0,
-            "sync_error": 0,
-            "sync_not_configured": 0,
-            "adoption_applied": 0,
-            "adoption_pending": 0,
-            "bridge": {
-                "service": "",
-                "status": "retired",
-                "accounts": 0,
-                "active_entitlements": 0,
-            },
-            "clients_detail": [],
-            "recent_errors": [],
-            "recent_events": [],
-        }
-    sync_counts = {
-        "ok": 0,
-        "pending": 0,
-        "error": 0,
-        "not_configured": 0,
-        "adoption_applied": 0,
-        "adoption_pending": 0,
-    }
-    client_rows = []
-    for subscription in vende_subscriptions:
-        metadata = subscription.metadata or {}
-        sync_status = str(
-            (metadata.get("catalogo_sync") or {}).get("status") or "PENDING"
-        ).upper()
-        adoption_status = str(
-            (metadata.get("catalogo_legacy_adoption") or {}).get("status") or ""
-        ).upper()
-        if sync_status == "OK":
-            sync_counts["ok"] += 1
-        elif sync_status == "ERROR":
-            sync_counts["error"] += 1
-        elif sync_status == "NOT_CONFIGURED":
-            sync_counts["not_configured"] += 1
-        else:
-            sync_counts["pending"] += 1
-        if adoption_status == "APPLIED":
-            sync_counts["adoption_applied"] += 1
-        elif subscription.estatus in {"ACTIVA", "TRIAL", "PAST_DUE"}:
-            sync_counts["adoption_pending"] += 1
-        client_rows.append(
-            {
-                "subscription_id": subscription.id,
-                "capa_id": subscription.capa_negocio_id,
-                "capa_nombre": subscription.capa_negocio.nombre,
-                "plan": subscription.plan.nombre,
-                "estatus": subscription.estatus,
-                "sync_status": sync_status,
-                "adoption_status": adoption_status or "PENDING",
-                "account_external_id": f"betterp-capa-{subscription.capa_negocio_id}",
-            }
-        )
-
-    base_url = _catalogo_bridge_base_url()
-    internal_key = (getattr(settings, "CATALOGO_SERVICE_INTERNAL_KEY", "") or "").strip()
-    configured = bool(base_url and internal_key)
-    timeout = int(getattr(settings, "CATALOGO_SERVICE_TIMEOUT_SECONDS", 8) or 8)
-    bridge_response: dict = {}
-    response_ms: int | None = None
-    detail = "Bridge Vende Facil configurado y respondiendo."
-    status = "OK"
-
-    if not configured:
-        if active_vende_subscriptions:
-            status = "ERROR"
-            detail = (
-                "Faltan CATALOGO_SERVICE_BASE_URL o CATALOGO_SERVICE_INTERNAL_KEY "
-                "para operar clientes Vende Facil."
-            )
-        else:
-            status = "OK"
-            detail = "Sin clientes activos Vende Facil; configurar el bridge antes de activar pilotos."
-    else:
-        started_at = timezone.now()
-        try:
-            response = requests.get(
-                f"{base_url}/status",
-                headers={"X-BetterP-Internal-Key": internal_key},
-                timeout=timeout,
-            )
-            response_ms = max(
-                int((timezone.now() - started_at).total_seconds() * 1000),
-                0,
-            )
-            response.raise_for_status()
-            payload = response.json()
-            bridge_response = payload if isinstance(payload, dict) else {"payload": payload}
-            if bridge_response.get("status") != "ok":
-                status = "WARN"
-                detail = "El bridge respondio, pero no reporto status ok."
-        except (requests.RequestException, ValueError) as exc:
-            status = "ERROR" if active_vende_subscriptions else "WARN"
-            detail = f"No se pudo consultar el bridge Vende Facil: {exc}"
-
-    recent_errors = list(
-        EventoBilling.objects.filter(
-            proveedor="VENDE_FACIL",
-            estatus="ERROR",
-            fecha_creacion__gte=since_24h,
-        ).order_by("-fecha_creacion", "-id")[:8]
-    )
-    recent_events = list(
-        EventoBilling.objects.filter(proveedor="VENDE_FACIL")
-        .order_by("-fecha_creacion", "-id")[:8]
-    )
-    if recent_errors:
-        status = "ERROR"
-        detail = f"{len(recent_errors)} evento(s) Vende Facil fallaron en 24h."
-    elif status != "ERROR" and (sync_counts["error"] or sync_counts["not_configured"]):
-        status = "ERROR" if active_vende_subscriptions else "WARN"
-        detail = (
-            f"{sync_counts['error']} sync con error y "
-            f"{sync_counts['not_configured']} sin configuracion."
-        )
-    elif status != "ERROR" and active_vende_subscriptions and sync_counts["pending"]:
-        status = "WARN"
-        detail = f"{sync_counts['pending']} cliente(s) Vende Facil pendientes de sincronizacion."
-
-    return {
-        "available": True,
-        "status": status,
-        "configured": configured,
-        "base_url": base_url,
-        "detail": detail,
-        "response_ms": response_ms,
-        "clients": len(vende_subscriptions),
-        "active_clients": len(active_vende_subscriptions),
-        "sync_ok": sync_counts["ok"],
-        "sync_pending": sync_counts["pending"],
-        "sync_error": sync_counts["error"],
-        "sync_not_configured": sync_counts["not_configured"],
-        "adoption_applied": sync_counts["adoption_applied"],
-        "adoption_pending": sync_counts["adoption_pending"],
-        "bridge": {
-            "service": bridge_response.get("service") or "",
-            "status": bridge_response.get("status") or "",
-            "accounts": int(bridge_response.get("accounts") or 0),
-            "active_entitlements": int(bridge_response.get("active_entitlements") or 0),
-        },
-        "clients_detail": client_rows[:20],
-        "recent_errors": [
-            {
-                "id": event.id,
-                "tipo_evento": event.tipo_evento,
-                "detalle_error": event.detalle_error,
-                "fecha": event.fecha_creacion,
-                "payload": event.payload,
-            }
-            for event in recent_errors
-        ],
-        "recent_events": [
-            {
-                "id": event.id,
-                "tipo_evento": event.tipo_evento,
-                "estatus": event.estatus,
-                "fecha": event.fecha_creacion,
-                "detalle_error": event.detalle_error,
-            }
-            for event in recent_events
-        ],
-    }
 
 
 def build_login_timing_summary(metrics: list[BackendRequestMetric], *, login_path: str) -> dict:
@@ -4769,7 +4563,6 @@ def build_go_live_readiness_summary(
     capacity_summary: dict,
     frontend_errors_summary: dict,
     web_vitals_summary: dict,
-    catalogo_bridge: dict,
 ) -> dict:
     stripe_mode = stripe_config.stripe_modo
     stripe_secret_configured = bool(get_stripe_secret_key_for_mode(stripe_mode))
@@ -4989,7 +4782,7 @@ def build_go_live_readiness_summary(
         "warnings": warnings,
         "blockers": blockers,
         "detail": detail,
-        "runbook": "docs/first-customer-go-live-checklist.md",
+        "runbook": "docs/puesta-en-marcha.md",
         "items": items,
     }
 
@@ -5669,11 +5462,8 @@ def business_admin_health(request):
     backups = all_backups.exclude(capa_negocio_id__in=historical_capa_ids)
     historical_backups = all_backups.filter(capa_negocio_id__in=historical_capa_ids)
     webhooks = WebhookEntrante.objects.all()
-    historical_billing_filter = (
-        Q(suscripcion_relacionada_id__in=historical_subscription_ids)
-        | Q(proveedor="VENDE_FACIL")
-        | Q(tipo_evento__startswith="catalogo.")
-        | Q(tipo_evento__startswith="subscription.catalogo.")
+    historical_billing_filter = Q(
+        suscripcion_relacionada_id__in=historical_subscription_ids
     )
     all_billing_events = EventoBilling.objects.all()
     billing_events = all_billing_events.exclude(historical_billing_filter)
@@ -5721,7 +5511,6 @@ def business_admin_health(request):
         since_24h=since_24h,
         since_7d=since_7d,
     )
-    catalogo_bridge_summary = build_catalogo_bridge_summary([], since_24h=since_24h)
     background_jobs_summary = build_background_jobs_summary(now=now, since_24h=since_24h)
     capacity_summary = build_subscription_capacity_summary(subscription_rows)
     backend_deployment_summary = build_backend_deployment_summary()
@@ -5751,7 +5540,6 @@ def business_admin_health(request):
         capacity_summary=capacity_summary,
         frontend_errors_summary=frontend_errors_summary,
         web_vitals_summary=web_vitals_summary,
-        catalogo_bridge=catalogo_bridge_summary,
     )
 
     alerts = []
@@ -6128,7 +5916,7 @@ def business_admin_health(request):
         "suscripciones": subscription_summary,
         "historical_scope": {
             "read_only": True,
-            "solution_name": "Vende Facil (legacy)",
+            "solution_name": "Historico",
             "subscriptions": len(historical_subscription_rows),
             "backups": historical_backups.count(),
             "billing_events": historical_billing_events.count(),
@@ -6145,7 +5933,6 @@ def business_admin_health(request):
         "backend_requests": backend_requests_summary,
         "backend_deployment": backend_deployment_summary,
         "smoke_deploy": smoke_deploy_summary,
-        "catalogo_bridge": catalogo_bridge_summary,
         "go_live_readiness": go_live_readiness_summary,
         "go_live_customers": go_live_customer_summary,
         "post_go_live_report": post_go_live_report_summary,
@@ -6322,27 +6109,21 @@ GO_LIVE_POST_TASK_PRIORITIES = {
     choice[0] for choice in GoLiveApproval.POST_GO_LIVE_PRIORITY_CHOICES
 }
 CATALOGO_GO_LIVE_BLOCKER_CODES = {
-    "catalogo_bridge_not_configured",
-    "catalogo_sync_error",
-    "catalogo_channel_error",
     "catalogo_quality_blockers",
-    "capacity_vende_productos_exceeded",
-    "capacity_vende_bodegas_exceeded",
-    "capacity_vende_canales_exceeded",
+    "pos_cobros_qr_pendientes",
+    "capacity_pos_productos_exceeded",
+    "capacity_pos_bodegas_exceeded",
+    "capacity_pos_cajas_exceeded",
 }
 CATALOGO_GO_LIVE_WARNING_CODES = {
-    "catalogo_sync_pending",
-    "catalogo_legacy_adoption_pending",
-    "catalogo_legacy_adoption_error",
     "catalogo_catalog_empty",
     "catalogo_inventory_incomplete",
-    "catalogo_channels_not_connected",
-    "catalogo_publications_attention",
     "catalogo_quality_open",
     "catalogo_cancellation_ratio",
-    "capacity_vende_productos_near_limit",
-    "capacity_vende_bodegas_near_limit",
-    "capacity_vende_canales_near_limit",
+    "pos_tickets_abiertos",
+    "capacity_pos_productos_near_limit",
+    "capacity_pos_bodegas_near_limit",
+    "capacity_pos_cajas_near_limit",
 }
 CATALOGO_GO_LIVE_ISSUE_CODES = (
     CATALOGO_GO_LIVE_BLOCKER_CODES | CATALOGO_GO_LIVE_WARNING_CODES
@@ -6415,7 +6196,7 @@ def build_catalogo_go_live_readiness(subscription: SuscripcionCapa | None) -> di
         if blocker_items
         else warning_items[0]["action"]
         if warning_items
-        else "Vende Facil listo para go-live comercial controlado."
+        else "Punto de venta listo para go-live comercial."
     )
     return {
         "available": True,
@@ -6473,7 +6254,7 @@ def enforce_catalogo_go_live_readiness(status: str, readiness: dict) -> None:
         raise HttpError(
             400,
             (
-                "Para aprobar go-live Vende Facil falta resolver: "
+                "Para aprobar el go-live falta resolver: "
                 f"{summarize_catalogo_go_live_issues(issues)}. "
                 "Si son pendientes no bloqueantes, usa APROBADO_CON_PENDIENTES."
             ),
@@ -6483,7 +6264,7 @@ def enforce_catalogo_go_live_readiness(status: str, readiness: dict) -> None:
             400,
             (
                 "No se puede aprobar con pendientes mientras existan bloqueos "
-                f"Vende Facil: {summarize_catalogo_go_live_issues(blocker_items)}."
+                f"Punto de venta: {summarize_catalogo_go_live_issues(blocker_items)}."
             ),
         )
 
@@ -7145,7 +6926,7 @@ def sync_business_admin_subscription_catalogo(request, subscription_id: int):
     require_platform_admin_access(request)
     raise HttpError(
         409,
-        "Vende Facil se conserva como historial de solo lectura en BetterP Commerce.",
+        "Las suscripciones historicas se conservan como solo lectura.",
     )
 
 
@@ -7162,7 +6943,7 @@ def check_business_admin_subscription_catalogo_provisioning(
     require_platform_admin_access(request)
     raise HttpError(
         409,
-        "Vende Facil se conserva como historial de solo lectura en BetterP Commerce.",
+        "Las suscripciones historicas se conservan como solo lectura.",
     )
 
 
@@ -7175,7 +6956,7 @@ def adopt_business_admin_subscription_catalogo_legacy(
     require_platform_admin_access(request)
     raise HttpError(
         409,
-        "Vende Facil se conserva como historial de solo lectura en BetterP Commerce.",
+        "Las suscripciones historicas se conservan como solo lectura.",
     )
 
 
@@ -8066,7 +7847,7 @@ def create_business_admin_plan(request, payload: AdminPlanUpsertIn):
     require_platform_admin_access(request)
     defaults = build_plan_defaults(payload)
     if is_retired_solution(defaults["solution"]):
-        raise HttpError(409, "Vende Facil conserva sus planes como historial de solo lectura.")
+        raise HttpError(409, "Los planes historicos son de solo lectura.")
     if defaults["es_default"]:
         clear_default_plans_for_solution(defaults["solution"])
     plan = PlanSaaS.objects.create(**defaults)
@@ -8081,10 +7862,10 @@ def update_business_admin_plan(request, plan_id: int, payload: AdminPlanUpsertIn
     require_platform_admin_access(request)
     plan = get_object_or_404(PlanSaaS.objects.select_related("solution"), id=plan_id)
     if is_retired_solution(plan.solution):
-        raise HttpError(409, "Vende Facil conserva sus planes como historial de solo lectura.")
+        raise HttpError(409, "Los planes historicos son de solo lectura.")
     defaults = build_plan_defaults(payload, existing_plan_id=plan.id)
     if is_retired_solution(defaults["solution"]):
-        raise HttpError(409, "Vende Facil conserva sus planes como historial de solo lectura.")
+        raise HttpError(409, "Los planes historicos son de solo lectura.")
     if defaults["es_default"]:
         clear_default_plans_for_solution(defaults["solution"], exclude_plan_id=plan.id)
     for field, value in defaults.items():

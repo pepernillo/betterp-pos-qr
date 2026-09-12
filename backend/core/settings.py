@@ -96,11 +96,6 @@ PLAN_LIMIT_EXEMPT_CAPAS = env.list(
 ALLOWED_HOSTS = env.list(
     'ALLOWED_HOSTS',
     default=[
-        'api.betterp.net',
-        'app.betterp.net',
-        'betterp.net',
-        'www.betterp.net',
-        '.betterp.net',
         'localhost',
         '127.0.0.1',
         'testserver',
@@ -251,9 +246,6 @@ REQUEST_METRICS_SLOW_MS = env.int(
     "REQUEST_METRICS_SLOW_MS",
     default=REQUEST_LOGGING_SLOW_MS,
 )
-CATALOGO_INTERNAL_API_TOKEN = env("CATALOGO_INTERNAL_API_TOKEN", default="")
-CATALOGO_SERVICE_BASE_URL = env("CATALOGO_SERVICE_BASE_URL", default="")
-CATALOGO_SERVICE_INTERNAL_KEY = env("CATALOGO_SERVICE_INTERNAL_KEY", default="")
 CATALOGO_APP_BASE_URL = env(
     "CATALOGO_APP_BASE_URL",
     default="https://vendefacil.betterp.net",
@@ -262,16 +254,6 @@ CATALOGO_SERVICE_TIMEOUT_SECONDS = env.int(
     "CATALOGO_SERVICE_TIMEOUT_SECONDS",
     default=8,
 )
-TIENDA_FACIL_APP_BASE_URL = env(
-    "TIENDA_FACIL_APP_BASE_URL",
-    default="https://tiendafacil.betterp.net",
-)
-TIENDA_FACIL_SERVICE_BASE_URL = env(
-    "TIENDA_FACIL_SERVICE_BASE_URL",
-    default="https://api-tiendafacil.betterp.net",
-)
-TIENDA_FACIL_SERVICE_INTERNAL_KEY = env("TIENDA_FACIL_SERVICE_INTERNAL_KEY", default="")
-TIENDA_FACIL_CAPA_ALIASES = env("TIENDA_FACIL_CAPA_ALIASES", default="")
 SENTRY_DSN = env("SENTRY_DSN", default="")
 SENTRY_TRACES_SAMPLE_RATE = env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.0)
 if SENTRY_DSN:
@@ -330,9 +312,6 @@ CORS_ALLOW_ALL_ORIGINS = env.bool(
 CORS_ALLOWED_ORIGINS = env.list(
     'CORS_ALLOWED_ORIGINS',
     default=[
-        'https://app.betterp.net',
-        'https://betterp.net',
-        'https://www.betterp.net',
         'http://localhost:3000',
         'http://127.0.0.1:3000',
     ],
@@ -342,10 +321,6 @@ CORS_ALLOW_HEADERS = (*default_headers, "x-betterp-capa-id", "x-portal-session")
 CSRF_TRUSTED_ORIGINS = env.list(
     'CSRF_TRUSTED_ORIGINS',
     default=[
-        'https://app.betterp.net',
-        'https://api.betterp.net',
-        'https://betterp.net',
-        'https://www.betterp.net',
         'http://localhost:3000',
         'http://127.0.0.1:3000',
     ],
@@ -369,35 +344,14 @@ SESSION_COOKIE_SAMESITE = env('SESSION_COOKIE_SAMESITE', default='Lax')
 CSRF_COOKIE_SAMESITE = env('CSRF_COOKIE_SAMESITE', default='Lax')
 X_FRAME_OPTIONS = 'DENY'
 
-BETTERP_PUBLIC_BASE_URL = env('BETTERP_PUBLIC_BASE_URL', default='https://betterp.net').rstrip('/')
-LEGACY_BETTERP_APP_BASE_URL = 'https://app.betterp.net'
+BETTERP_PUBLIC_BASE_URL = env('BETTERP_PUBLIC_BASE_URL', default='http://localhost:3000').rstrip('/')
+
 BETTERP_PLATFORM_BASE_URL = env(
     'BETTERP_PLATFORM_BASE_URL',
     default=BETTERP_PUBLIC_BASE_URL,
 ).rstrip('/')
-if BETTERP_PLATFORM_BASE_URL.lower() == LEGACY_BETTERP_APP_BASE_URL:
-    BETTERP_PLATFORM_BASE_URL = BETTERP_PUBLIC_BASE_URL
-
-
-def _normalize_frontend_base_url(value):
-    base_url = (value or '').strip().rstrip('/')
-    if base_url.lower() == LEGACY_BETTERP_APP_BASE_URL:
-        return BETTERP_PLATFORM_BASE_URL
-    return base_url
-
-
-FRONTEND_BASE_URL = _normalize_frontend_base_url(
-    env('FRONTEND_BASE_URL', default='http://localhost:3000')
-)
+FRONTEND_BASE_URL = env('FRONTEND_BASE_URL', default='http://localhost:3000').strip().rstrip('/')
 BACKEND_PUBLIC_BASE_URL = env('BACKEND_PUBLIC_BASE_URL', default='')
-MERCADO_LIBRE_CLIENT_ID = env('MERCADO_LIBRE_CLIENT_ID', default='')
-MERCADO_LIBRE_CLIENT_SECRET = env('MERCADO_LIBRE_CLIENT_SECRET', default='')
-MERCADO_LIBRE_REDIRECT_URI = env('MERCADO_LIBRE_REDIRECT_URI', default='')
-MERCADO_LIBRE_DEFAULT_CATEGORY_ID = env('MERCADO_LIBRE_DEFAULT_CATEGORY_ID', default='')
-MERCADO_LIBRE_DEFAULT_LISTING_TYPE_ID = env(
-    'MERCADO_LIBRE_DEFAULT_LISTING_TYPE_ID',
-    default='',
-)
 EASYBROKER_API_BASE_URL = env('EASYBROKER_API_BASE_URL', default='')
 EASYBROKER_STAGING_API_BASE_URL = env('EASYBROKER_STAGING_API_BASE_URL', default='')
 EASYBROKER_API_KEY = env('EASYBROKER_API_KEY', default='')
@@ -686,7 +640,6 @@ BACKOFFICE_TIKTOK_UPLOAD_TIMEOUT = env.int(
     'BACKOFFICE_TIKTOK_UPLOAD_TIMEOUT',
     default=900,
 )
-MERCADO_LIBRE_WEBHOOK_SECRET = env('MERCADO_LIBRE_WEBHOOK_SECRET', default='')
 RENTA_ESPACIOS_SYNC_TOKEN = env('RENTA_ESPACIOS_SYNC_TOKEN', default='')
 FINANZAS_CXC_SYNC_TOKEN = env('FINANZAS_CXC_SYNC_TOKEN', default='')
 SMOKE_REPORT_TOKEN = env('SMOKE_REPORT_TOKEN', default='')

@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { STORAGE_KEYS, buildApiUrl } from "@/lib/api";
-import RentaAlertasBell from "./RentaAlertasBell";
 import { useAuth } from "./auth/AuthProvider";
 import ThemeToggle from "./theme/ThemeToggle";
 
@@ -28,127 +27,90 @@ function MenuIcon() {
   );
 }
 
+const PAGE_META: Record<string, { eyebrow: string; title: string; description: string }> = {
+  "/dashboard": {
+    eyebrow: "Vista general",
+    title: "Tablero de venta",
+    description: "Venta del dia, cuentas abiertas y estado de las cajas.",
+  },
+  "/pos-qr/caja": {
+    eyebrow: "Venta",
+    title: "Caja",
+    description: "Cobro en mostrador, cobro por QR y cierre de cuenta.",
+  },
+  "/pos-qr/mesas": {
+    eyebrow: "Restaurante",
+    title: "Mesas",
+    description: "Estado de cada mesa y su codigo QR de menu.",
+  },
+  "/pos-qr/comandas": {
+    eyebrow: "Restaurante",
+    title: "Comandas",
+    description: "Lo que espera cocina, por orden de llegada.",
+  },
+  "/pos-qr/corte": {
+    eyebrow: "Venta",
+    title: "Corte de caja",
+    description: "Totales del turno y cuadre de efectivo.",
+  },
+  "/pos-qr/productos": {
+    eyebrow: "Catalogo",
+    title: "Productos",
+    description: "Alta y edicion de lo que se vende.",
+  },
+  "/pos-qr/catalogos": {
+    eyebrow: "Catalogo",
+    title: "Catalogos",
+    description: "Categorias que ordenan la carta y la caja.",
+  },
+  "/pos-qr/inventario": {
+    eyebrow: "Catalogo",
+    title: "Inventario",
+    description: "Bodegas, existencias y movimientos.",
+  },
+  "/pos-qr/cajas": {
+    eyebrow: "Operacion",
+    title: "Puntos de venta",
+    description: "Cajas, cobro por QR y publicacion del menu.",
+  },
+  "/pos-qr/reportes": {
+    eyebrow: "Operacion",
+    title: "Reportes de venta",
+    description: "Venta por periodo, forma de pago y producto.",
+  },
+  "/clientes": {
+    eyebrow: "CRM",
+    title: "Clientes",
+    description: "Directorio, datos fiscales e historial.",
+  },
+  "/configuracion": {
+    eyebrow: "Administracion",
+    title: "Configuracion del sistema",
+    description: "Datos de negocio, facturacion, integraciones y accesos.",
+  },
+  "/cuenta": {
+    eyebrow: "Cuenta",
+    title: "Configuracion de cuenta",
+    description: "Contrasena, recuperacion por correo y seguridad de acceso.",
+  },
+};
+
 function getPageMeta(pathname: string) {
-  if (pathname === "/dashboard") {
-    return {
-      eyebrow: "Vista general",
-      title: "Dashboard",
-      description: "Cobranza, gastos, ocupacion y oportunidad comercial en una sola vista.",
-    };
-  }
+  const meta = PAGE_META[pathname];
+  if (meta) return meta;
 
-  if (pathname === "/onboarding") {
+  if (pathname === "/backoffice" || pathname.startsWith("/backoffice/")) {
     return {
-      eyebrow: "Arranque",
-      title: "Onboarding operativo",
-      description: "Configura capa, reglas, carga batch, cartera y portal antes de operar.",
-    };
-  }
-
-  if (pathname.startsWith("/entidades/")) {
-    return {
-      eyebrow: "Unidad de negocio",
-      title: "Gestion de entidad",
-      description: "Inventario, reglas y operacion diaria.",
-    };
-  }
-
-  if (pathname === "/entidades") {
-    return {
-      eyebrow: "Portafolio",
-      title: "Unidades de negocio",
-      description: "Portafolio y operacion por unidad.",
-    };
-  }
-
-  if (pathname === "/clientes") {
-    return {
-      eyebrow: "CRM",
-      title: "Clientes",
-      description: "Directorio, datos fiscales e historial.",
-    };
-  }
-
-  if (pathname === "/renta-espacios") {
-    return {
-      eyebrow: "Comercial",
-      title: "Renta de espacios",
-      description: "Disponibilidad, fichas y canales.",
-    };
-  }
-
-  if (pathname === "/marketing") {
-    return {
-      eyebrow: "Marketing",
-      title: "Publicidad y comunicados",
-      description: "Redes sociales, campanas y contenido para espacios disponibles.",
-    };
-  }
-
-  if (pathname === "/cxc") {
-    return {
-      eyebrow: "Finanzas",
-      title: "Cuentas por cobrar",
-      description: "Cartera, vencimientos y pagos.",
-    };
-  }
-
-  if (pathname === "/cxp") {
-    return {
-      eyebrow: "Finanzas",
-      title: "Cuentas por pagar",
-      description: "Gastos, compromisos y flujo.",
-    };
-  }
-
-  if (pathname === "/configuracion") {
-    return {
-      eyebrow: "Administracion",
-      title: "Configuracion del sistema",
-      description: "Datos de negocio, facturacion, integraciones y accesos.",
-    };
-  }
-
-  if (pathname === "/cuenta") {
-    return {
-      eyebrow: "Cuenta",
-      title: "Configuracion de cuenta",
-      description: "Contrasena, recuperacion por correo y seguridad personal de acceso.",
-    };
-  }
-
-  if (pathname === "/conciliacion") {
-    return {
-      eyebrow: "Backoffice",
-      title: "Conciliacion",
-      description: "Movimientos, bancos y validacion.",
-    };
-  }
-
-  if (pathname === "/documentacion") {
-    return {
-      eyebrow: "Ayuda",
-      title: "Documentacion",
-      description: "Guia operativa para usar BettERP por modulo.",
-    };
-  }
-
-  if (
-    pathname === "/administracion-negocio" ||
-    pathname === "/backoffice" ||
-    pathname === "/admin"
-  ) {
-    return {
-      eyebrow: "BettERP",
-      title: "Backoffice del negocio",
-      description: "Clientes SaaS, ventas, solicitudes, cobranza y marketing en una sola vista.",
+      eyebrow: "BetterP POS QR",
+      title: "Backoffice",
+      description: "Clientes, planes, ventas y salud de la plataforma.",
     };
   }
 
   return {
-    eyebrow: "BettERP",
-    title: "Panel de control",
-    description: "Operacion central del sistema.",
+    eyebrow: "BetterP POS QR",
+    title: "Punto de venta",
+    description: "Operacion de mostrador y restaurante.",
   };
 }
 
@@ -345,7 +307,6 @@ export default function HeaderBar({ onMenuToggle, subscription }: HeaderBarProps
 
         <div className="flex shrink-0 items-center gap-2">
           <ThemeToggle />
-          <RentaAlertasBell />
 
           <details ref={menuRef} className="relative shrink-0">
             <summary className="flex cursor-pointer list-none items-center gap-2.5 rounded-2xl border border-white/10 bg-zinc-900/80 px-2 py-1.5 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white">

@@ -1,19 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const LEGACY_APP_HOSTS = new Set(["app.betterp.net"]);
-const CANONICAL_HOST = "betterp.net";
+/**
+ * Hosts historicos que deben terminar en el dominio canonico del segmento.
+ * Configura CANONICAL_HOST con el dominio real antes de publicar.
+ */
+const LEGACY_HOSTS = new Set<string>([]);
+const CANONICAL_HOST = process.env.NEXT_PUBLIC_CANONICAL_HOST || "";
 
 export function middleware(request: NextRequest) {
   const host = request.headers.get("host")?.split(":")[0]?.toLowerCase();
 
-  if (!host || !LEGACY_APP_HOSTS.has(host)) {
+  if (!host || !CANONICAL_HOST || !LEGACY_HOSTS.has(host)) {
     return NextResponse.next();
   }
 
-  const targetUrl = request.nextUrl.clone();
-  targetUrl.protocol = "https:";
-  targetUrl.hostname = CANONICAL_HOST;
-  targetUrl.port = "";
-
-  return NextResponse.redirect(targetUrl, 301);
+  const target = request.nextUrl.clone();
+  target.protocol = "https:";
+  target.hostname = CANONICAL_HOST;
+  target.port = "";
+  return NextResponse.redirect(target, 301);
 }
