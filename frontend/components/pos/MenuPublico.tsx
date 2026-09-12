@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { posPublicApi } from "@/lib/pos-api";
+import { SOURCE_URL } from "@/lib/pos-segment";
 import { mensajeDeError, money } from "./ui";
 
 type Menu = Awaited<ReturnType<typeof posPublicApi.menu>>;
@@ -177,6 +178,17 @@ export default function MenuPublico({ token }: { token: string }) {
           </section>
         ))}
       </div>
+
+      <footer className="px-5 pb-6 pt-2 text-center">
+        <a
+          href={SOURCE_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="text-[11px] text-zinc-600 hover:text-zinc-400"
+        >
+          Hecho con BetterP POS QR - codigo fuente
+        </a>
+      </footer>
 
       {menu.permite_pedido && total > 0 ? (
         <div className="fixed inset-x-0 bottom-0 border-t border-white/10 bg-zinc-950/95 px-5 py-4 backdrop-blur">

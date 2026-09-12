@@ -8,6 +8,14 @@
 
 export const SOLUTION_KEY = "pos_qr";
 
+/**
+ * Repositorio del codigo fuente.
+ *
+ * La AGPL-3.0 (seccion 13) exige ofrecer el fuente a quien use el software a
+ * traves de una red, asi que las paginas publicas enlazan aqui.
+ */
+export const SOURCE_URL = "https://github.com/pepernillo/betterp-pos-qr";
+
 export const SEGMENT_PATH = "/pos-qr";
 export const SEGMENT_ENTRY_PATH = "/pos-qr/entrar";
 export const CAJA_PATH = "/pos-qr/caja";

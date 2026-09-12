@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { posPublicApi } from "@/lib/pos-api";
+import { SOURCE_URL } from "@/lib/pos-segment";
 import { mensajeDeError, money } from "./ui";
 
 type Cobro = Awaited<ReturnType<typeof posPublicApi.cobro>>;
@@ -97,6 +98,14 @@ export default function CobroPublico({ referencia }: { referencia: string }) {
         <p className="mt-6 text-xs text-zinc-600">
           Esta pantalla se actualiza sola cuando la caja confirma el pago.
         </p>
+        <a
+          href={SOURCE_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-3 inline-block text-[11px] text-zinc-600 hover:text-zinc-400"
+        >
+          Hecho con BetterP POS QR - codigo fuente
+        </a>
       </section>
     </main>
   );

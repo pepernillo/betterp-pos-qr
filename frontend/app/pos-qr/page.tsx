@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { SEGMENT_ENTRY_PATH, segmentRegistrationPath } from "@/lib/pos-segment";
+import { SEGMENT_ENTRY_PATH, SOURCE_URL, segmentRegistrationPath } from "@/lib/pos-segment";
 
 export const metadata: Metadata = {
   title: "BetterP POS QR",
@@ -209,6 +209,14 @@ export default function PosQrLandingPage() {
             <Link href={SEGMENT_ENTRY_PATH} className="hover:text-zinc-300">
               Entrar
             </Link>
+            <a
+              href={SOURCE_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-zinc-300"
+            >
+              Codigo fuente
+            </a>
           </nav>
         </div>
       </footer>

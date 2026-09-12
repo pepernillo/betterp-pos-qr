@@ -87,3 +87,13 @@ cd frontend && npx tsc --noEmit && npm run build
 Las pruebas heredadas que evaluaban rentas, marketing y marketplaces se
 eliminaron junto con ese codigo; las de catalogo se conservaron y las del punto
 de venta (`pos/tests.py`) se escribieron para este fork.
+
+## Licencia
+
+[GNU AGPL-3.0](LICENSE).
+
+Copyright (C) 2026 pepernillo
+
+Es copyleft de red: quien ofrezca este software como servicio a traves de una
+red tiene que poner el codigo fuente de su version a disposicion de sus usuarios
+(seccion 13 de la licencia). Por eso las paginas publicas enlazan al repositorio.
