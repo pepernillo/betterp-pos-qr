@@ -48,7 +48,7 @@ Soy transparente con el estado del proyecto: lo publique apenas, derivado de un 
 
 ## Antes de enviar
 
-Lo que el programa dice que mira, y como esta el repo:
+### Repositorio
 
 | Senal | Estado |
 |---|---|
@@ -62,12 +62,27 @@ Lo que el programa dice que mira, y como esta el repo:
 | Issues y PRs | 0 |
 | Contribuidores | 1 |
 
-Lo que bloqueaba ya esta resuelto. Lo que queda en cero son senales de
-traccion que no se fabrican en un dia; por eso la solicitud es franca al
-respecto y se apoya en el hueco de ecosistema.
+### Perfil de GitHub
 
-Falta que tu pongas: nombre, apellidos, correo de tu cuenta de ChatGPT y el ID
-de organizacion de OpenAI. Y que tu perfil de GitHub este en publico.
+| Senal | Estado |
+|---|---|
+| README de perfil | publicado |
+| Repos visibles | betterp-pos-qr, pepernillo y dos forks antiguos |
+| Nombre y bio | **faltan** (requieren el scope `user`) |
+| Contribuciones privadas visibles | **falta activarlo** |
 
-El aviso de copyright del README dice `pepernillo`. Si prefieres tu nombre
-legal, cambialo ahi y en la solicitud.
+### Lo que falta, en orden de impacto
+
+1. **Activar contribuciones privadas** en
+   https://github.com/settings/profile -> Contributions ->
+   *Include private contributions on my profile*.
+   Sin esto tu grafica se ve casi vacia para quien no ha iniciado sesion, y
+   "evidencia de mantenimiento activo" es justo lo que el programa evalua.
+2. **Fijar solo betterp-pos-qr** con *Customize your pins* en tu perfil. Hoy los
+   dos forks aparecen primero en "Popular repositories".
+3. **Nombre y bio** en el perfil.
+4. En el formulario: nombre, apellidos, correo de tu cuenta de ChatGPT y el ID
+   de organizacion de OpenAI (platform.openai.com -> Settings -> Organization).
+
+El aviso de copyright del README del proyecto dice `pepernillo`. Si prefieres tu
+nombre legal, cambialo ahi y en la solicitud.
