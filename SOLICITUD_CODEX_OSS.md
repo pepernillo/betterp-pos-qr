@@ -48,19 +48,26 @@ Soy transparente con el estado del proyecto: lo publique apenas, derivado de un 
 
 ## Antes de enviar
 
-Lo que el programa dice que mira, y cómo está el repo hoy:
+Lo que el programa dice que mira, y como esta el repo:
 
-| Señal | Estado |
+| Senal | Estado |
 |---|---|
-| Licencia open source | **falta** — sin ella el repo no es open source |
-| Estrellas / forks | 0 / 0 |
-| Issues y PRs | 0 |
-| Releases | 0 |
-| Contribuidores | 1 |
-| Topics | 0 |
+| Licencia open source | **AGPL-3.0** |
+| Descripcion y topics | listos (14 topics) |
+| Release | **v0.1.0** publicada |
 | README y docs | listos |
 | CI | Backend CI y Frontend CI activos |
+| Pruebas | 342 en verde (verificado) |
+| Estrellas / forks | 0 / 0 |
+| Issues y PRs | 0 |
+| Contribuidores | 1 |
 
-La licencia es lo único que bloquea de verdad. Lo demás son señales de tracción
-que no se fabrican en un día; la estrategia de la solicitud es ser franco sobre
-eso y apoyarse en el hueco de ecosistema.
+Lo que bloqueaba ya esta resuelto. Lo que queda en cero son senales de
+traccion que no se fabrican en un dia; por eso la solicitud es franca al
+respecto y se apoya en el hueco de ecosistema.
+
+Falta que tu pongas: nombre, apellidos, correo de tu cuenta de ChatGPT y el ID
+de organizacion de OpenAI. Y que tu perfil de GitHub este en publico.
+
+El aviso de copyright del README dice `pepernillo`. Si prefieres tu nombre
+legal, cambialo ahi y en la solicitud.
